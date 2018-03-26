@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\SkaiaLogger.cs" />
     <Compile Include="Sockets\Base\BaseSocket.cs" />
     <Compile Include="Sockets\Packet.cs" />
     <Compile Include="Sockets\ThreadedSocket.cs" />
@@ -48,6 +50,7 @@
     <Compile Include="Surrogates\SafeQueue.cs" />
     <Compile Include="Utils\ByteHelpers.cs" />
     <Compile Include="Utils\Dispatcher.cs" />
+    <Compile Include="Utils\NetUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
