@@ -9,6 +9,9 @@ using System;
 
 namespace SkaiaLib.Logging
 {
+    /// <summary>
+    /// Hook onto the <seealso cref="OnMessageLogged"/> event to receive logs from SkaiaLib.
+    /// </summary>
     public static class SkaiaLogger
     {
         /// <summary>
