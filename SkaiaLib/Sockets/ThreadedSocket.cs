@@ -29,25 +29,25 @@ namespace SkaiaLib.Sockets
         /// Start the socket in a new thread.
         /// </summary>
         /// <param name="endpoint"> The local endpoint. </param>
-        public void Start(int port)
+        public void Start(IPAddress address, int port)
         {
             thread = new Thread(ThreadLoop)
             {
                 IsBackground = true,
                 Name = "Socket Thread"
             };
-
-            thread.Start(port);
+            IPEndPoint endPoint = new IPEndPoint(address, port);
+            thread.Start(endPoint);
         }
 
         /// <summary>
         /// The socket loop which pulls received data and sends the queued data.
         /// </summary>
         /// <param name="endpoint"></param>
-        void ThreadLoop(object port)
+        void ThreadLoop(object endpoint)
         {
             socket = new UDPSocket();
-            socket.BindSocket(new IPEndPoint(socket.GetLocalIP(), (int)port));
+            socket.BindSocket((IPEndPoint)endpoint);
 
             while (true)
             {

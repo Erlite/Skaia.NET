@@ -69,11 +69,5 @@ namespace SkaiaLib.Sockets
         {
             return Socket.SendTo(buffer, 0, length, SocketFlags.None, receiver);
         }
-
-        /// <summary>
-        /// Find the local IP address to use as an endpoint.
-        /// </summary>
-        /// <returns></returns>
-        public IPAddress GetLocalIP() => GetLocalAddress();
     }
 }

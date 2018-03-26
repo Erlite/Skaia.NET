@@ -5,6 +5,7 @@
 // Purpose: Dispatch callbacks based on data received.
 // ---------------------------------------------------
 
+using SkaiaLib.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -27,8 +28,12 @@ namespace SkaiaLib.Utils
             }
             else
             {
-                // TODO: Implement logger.
-                Console.WriteLine("SkaiaLib [ERROR] => Couldn't find any callback of type " + evnt.GetType());
+                LogMessage msg = new LogMessage
+                {
+                    Severity = MsgSeverity.Error,
+                    Message = $"Couldn't find any callback of type {evnt.GetType()} to Dispatch"
+                };
+                SkaiaLogger.Log(LogLevel.Debug | LogLevel.Warning, msg);
             }
         }
     }

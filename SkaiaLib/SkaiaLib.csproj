@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
+    <Compile Include="Logging\MsgSeverity.cs" />
     <Compile Include="Logging\SkaiaLogger.cs" />
     <Compile Include="Sockets\Base\BaseSocket.cs" />
     <Compile Include="Sockets\Packet.cs" />

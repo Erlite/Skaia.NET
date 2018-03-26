@@ -13,5 +13,6 @@ namespace SkaiaLib.Logging
         Verbose = 1 << 1,
         Debug = 1 << 2,
         Info = 1 << 3,
+        Warning = 1 << 4
     }
 }
