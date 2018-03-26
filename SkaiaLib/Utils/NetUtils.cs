@@ -55,12 +55,12 @@ namespace SkaiaLib.Utils
             }
 
             IPAddress address =  netInterfaces.Select(n => n.GetIPProperties())
-                                .Select(i => i.UnicastAddresses)
-                                .SelectMany(u => u)
+                                .SelectMany(i => i.UnicastAddresses)
                                 .Where(u => u.IsDnsEligible) // Just a safety check I suppose.
                                 .Select(u => u.Address)
                                 .FirstOrDefault();
 
+            // Shouldn't ever arrive but you're never sure enough.
             if (address == null)
                 return IPAddress.Parse("127.0.0.1");
 
