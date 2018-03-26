@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿
+// ------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Thread-safe queue implementation.
+// ------------------------------------------
+
+using System.Collections.Generic;
 
 namespace SkaiaLib.Surrogates
 {

@@ -1,4 +1,11 @@
-﻿using System.Net;
+﻿
+// ---------------------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Packet struct to link data with receiver/sender.
+// ---------------------------------------------------------
+
+using System.Net;
 
 namespace SkaiaLib.Sockets
 {

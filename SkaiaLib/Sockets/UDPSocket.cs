@@ -1,4 +1,11 @@
-﻿using SkaiaLib.Base;
+﻿
+// ----------------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Socket implementation to use UDP over IPv4.
+// ----------------------------------------------------
+
+using SkaiaLib.Base;
 using System;
 using System.Net;
 using System.Net.Sockets;

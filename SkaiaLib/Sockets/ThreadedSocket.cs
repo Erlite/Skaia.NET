@@ -1,4 +1,11 @@
-﻿using SkaiaLib.Surrogates;
+﻿
+// -------------------------------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Threaded socket implementation to avoid blocking a thread.
+// -------------------------------------------------------------------
+
+using SkaiaLib.Surrogates;
 using System;
 using System.Net;
 using System.Threading;
@@ -47,9 +54,8 @@ namespace SkaiaLib.Sockets
                 // If something has been received on the socket.
                 if (socket.Poll(1))
                 {
-                    EndPoint sender;
                     // Read the data
-                    int recvBytes = socket.Receive(recvBuffer, recvBuffer.Length, out sender);
+                    int recvBytes = socket.Receive(recvBuffer, recvBuffer.Length, out EndPoint sender);
 
                     if (recvBytes > 0)
                     {
@@ -59,9 +65,8 @@ namespace SkaiaLib.Sockets
                         EnqueueReceivedPacket(packet);
                     }
 
-                    Packet sendPckt;
                     // Send queued data
-                    while (DequeueTransmitPacketQueue(out sendPckt))
+                    while (DequeueTransmitPacketQueue(out Packet sendPckt))
                     {
                         socket.Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
                     }

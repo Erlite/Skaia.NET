@@ -1,4 +1,11 @@
-﻿using System;
+﻿
+// -----------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Base socket implementation.
+// -----------------------------------------
+
+using System;
 using System.Net;
 using System.Net.Sockets;
 
@@ -13,31 +20,6 @@ namespace SkaiaLib.Base
         public abstract bool Poll(int timeout);
         public abstract int Receive(byte[] buffer, int length, out EndPoint sender);
         public abstract int Send(byte[] buffer, int length, EndPoint sender);
-
-        /// <summary>
-        /// This is a sneaky way to get your own IP. It will connect to Google's DNS server at 8.8.8.8 and get the socket's local endpoint.
-        /// This also ensures that you use the PC's preferred endpoint.
-        /// </summary>
-        /// <seealso cref="https://stackoverflow.com/a/27376368"/>
-        /// <returns>Your local IP address to use as a socket bound endpoint.</returns>
-        // TODO: Change this to a more robust solution.
-        protected IPAddress GetLocalAddress()
-        {
-            try
-            {
-                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
-                {
-                    socket.Connect("8.8.8.8", 65530);
-                    IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-                    return endPoint.Address;
-                }
-            }
-            catch (SocketException ex)
-            {
-                Console.WriteLine("SkaiaLib [FATAL] => Couldn't find local IP. Defaulting to 127.0.0.1 | Ex: " + ex.StackTrace);
-                return IPAddress.Parse("127.0.0.1");
-            }
-        }
 
         /// <summary>
         /// Thanks to the network freelancer, according to him everything fails without this.

@@ -1,4 +1,11 @@
-﻿using System;
+﻿
+// ---------------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Dispatch callbacks based on data received.
+// ---------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 
 namespace SkaiaLib.Utils
@@ -14,8 +21,7 @@ namespace SkaiaLib.Utils
 
         public void Call(T evnt)
         {
-            Action<T> cback;
-            if (callbacks.TryGetValue(evnt.GetType(), out cback))
+            if (callbacks.TryGetValue(evnt.GetType(), out Action<T> cback))
             {
                 cback(evnt);
             }
