@@ -5,9 +5,11 @@
 // Purpose: Threaded socket implementation to avoid blocking a thread.
 // -------------------------------------------------------------------
 
+using SkaiaLib.Logging;
 using SkaiaLib.Surrogates;
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace SkaiaLib.Sockets
@@ -37,7 +39,28 @@ namespace SkaiaLib.Sockets
                 Name = "Socket Thread"
             };
             IPEndPoint endPoint = new IPEndPoint(address, port);
-            thread.Start(endPoint);
+
+            try
+            {
+                thread.Start(endPoint);
+            }
+            catch (SocketException ex)
+            {
+                LogMessage log = new LogMessage
+                {
+                    Type = MessageType.Fatal,
+                    Message = "There was an error accessing the socket on the specified endpoint.",
+                    Exception = ex
+                };
+                SkaiaLogger.Log(log);
+                return;
+            }
+
+            LogMessage msg = new LogMessage
+            {
+                Type = MessageType.Info,
+                Message = "Socket started."
+            };
         }
 
         /// <summary>
@@ -63,13 +86,16 @@ namespace SkaiaLib.Sockets
                         Buffer.BlockCopy(recvBuffer, 0, data, 0, recvBytes);
                         Packet packet = new Packet { Data = data, Endpoint = sender };
                         EnqueueReceivedPacket(packet);
-                    }
 
-                    // Send queued data
-                    while (DequeueTransmitPacketQueue(out Packet sendPckt))
-                    {
-                        socket.Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
+                        SkaiaLogger.Log(new LogMessage { Type = MessageType.Info, Message = $"Received a packet. Size: {packet.Data.Length} | Sender: {packet.Endpoint.ToString()}." });
                     }
+                }
+
+                // Send queued data
+                while (DequeueTransmitPacketQueue(out Packet sendPckt))
+                {
+                    socket.Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
+                    SkaiaLogger.Log(new LogMessage { Type = MessageType.Info, Message = $"Sent a packet. Size: {sendPckt.Data.Length} | Receiver: {sendPckt.Endpoint.ToString()}." });
                 }
             }
         }
@@ -78,7 +104,12 @@ namespace SkaiaLib.Sockets
         /// Add a received packet to the queue.
         /// </summary>
         /// <param name="packet"> The packet to enqueue. </param>
-        void EnqueueReceivedPacket(Packet packet) => inQueue.Enqueue(packet);
+        void EnqueueReceivedPacket(Packet packet)
+        { 
+            inQueue.Enqueue(packet);
+            SkaiaLogger.Log(new LogMessage { Type = MessageType.Debug, Message = "Enqueued a received packet." });
+        }
+
 
         /// <summary>
         /// Retrieve a packet from the received packets queue.
@@ -94,7 +125,11 @@ namespace SkaiaLib.Sockets
         /// Queue a packet for sending.
         /// </summary>
         /// <param name="packet"> Packet to queue. </param>
-        public void EnqueuePacketToSend(Packet packet) => outQueue.Enqueue(packet);
+        public void EnqueuePacketToSend(Packet packet)
+        {
+            SkaiaLogger.Log(new LogMessage { Type = MessageType.Debug, Message = "Enqueued a packet to send." });
+            outQueue.Enqueue(packet);
+        }
 
         /// <summary>
         /// Retrieve a packet from the packets to transmit queue.

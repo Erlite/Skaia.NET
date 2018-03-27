@@ -11,7 +11,7 @@ namespace SkaiaLib.Logging
 {
     public struct LogMessage
     {
-        public MsgSeverity Severity;
+        public MessageType Type;
         public string Message;
         public Exception Exception;
     }

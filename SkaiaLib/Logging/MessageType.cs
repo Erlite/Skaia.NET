@@ -2,17 +2,18 @@
 // -----------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Message severity for logging.
+// Purpose: Message type for logging.
 // -----------------------------------------
 
 namespace SkaiaLib.Logging
 {
     [System.Flags]
-    public enum MsgSeverity
+    public enum MessageType
     {
-        Log = 1 << 1,
-        Error = 1 << 2,
-        Critical = 1 << 3,
-        Fatal = 1 << 4
+        Info = 1 << 1,
+        Debug = 1 << 2,
+        Error = 1 << 3,
+        Critical = 1 << 4,
+        Fatal = 1 << 5
     }
 }

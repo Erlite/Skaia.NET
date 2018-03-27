@@ -32,11 +32,11 @@ namespace SkaiaLib.Utils
             {
                 LogMessage msg = new LogMessage
                 {
-                    Severity = MsgSeverity.Critical,
+                    Type = MessageType.Critical,
                     Message = "Cannot get information about the network interfaces on this machine.",
                     Exception = netEx
                 };
-                SkaiaLogger.Log(LogLevel.Warning | LogLevel.Debug | LogLevel.Verbose, msg);
+                SkaiaLogger.Log(msg);
                 return null;
             }
 
@@ -45,10 +45,10 @@ namespace SkaiaLib.Utils
                 // Well. Umm how can I say it. You ain't playing multiplayer at this point.
                 LogMessage msg = new LogMessage
                 {
-                    Severity = MsgSeverity.Critical,
+                    Type = MessageType.Critical,
                     Message = "Cannot find any operating network interface with IPv4 support, defaulting to 127.0.0.1"
                 };
-                SkaiaLogger.Log(LogLevel.Debug | LogLevel.Warning | LogLevel.Info | LogLevel.Verbose, msg);
+                SkaiaLogger.Log(msg);
 
                 // TODO: Check if we should just fail at this point, dunno if 127.0.0.1 will even work.
                 return IPAddress.Parse("127.0.0.1");

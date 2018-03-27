@@ -30,10 +30,10 @@ namespace SkaiaLib.Utils
             {
                 LogMessage msg = new LogMessage
                 {
-                    Severity = MsgSeverity.Error,
+                    Type = MessageType.Error,
                     Message = $"Couldn't find any callback of type {evnt.GetType()} to Dispatch"
                 };
-                SkaiaLogger.Log(LogLevel.Debug | LogLevel.Warning, msg);
+                SkaiaLogger.Log(msg);
             }
         }
     }
