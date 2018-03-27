@@ -28,12 +28,7 @@ namespace SkaiaLib.Utils
             }
             else
             {
-                LogMessage msg = new LogMessage
-                {
-                    Type = MessageType.Error,
-                    Message = $"Couldn't find any callback of type {evnt.GetType()} to Dispatch"
-                };
-                SkaiaLogger.Log(msg);
+                SkaiaLogger.LogMessage(MessageType.Error, $"Couldn't find any callback of type {evnt.GetType()} to Dispatch");
             }
         }
     }

@@ -35,12 +35,7 @@ namespace SkaiaLib.Sockets
             LocalEndpoint = Socket.LocalEndPoint;
             recvEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);
 
-            LogMessage msg = new LogMessage
-            {
-                Type = MessageType.Info,
-                Message = $"Bound socket to {localEndpoint.ToString()}"
-            };
-            SkaiaLogger.Log(msg);
+            SkaiaLogger.LogMessage(MessageType.Info, $"Bound socket to {localEndpoint.ToString()}");
             // Set the connection reset.
             SetConnReset(Socket);
         }
@@ -53,13 +48,7 @@ namespace SkaiaLib.Sockets
             }
             catch (Exception ex)
             {
-                LogMessage msg = new LogMessage
-                {
-                    Type = MessageType.Error,
-                    Message = "Failed to poll on socket.",
-                    Exception = ex
-                };
-                SkaiaLogger.Log(msg);
+                SkaiaLogger.LogMessage(MessageType.Error, "Failed to poll on socket", ex);
                 return false;
             }
         }

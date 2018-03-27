@@ -87,7 +87,7 @@ namespace SkaiaLib.Sockets
                         Packet packet = new Packet { Data = data, Endpoint = sender };
                         EnqueueReceivedPacket(packet);
 
-                        SkaiaLogger.Log(new LogMessage { Type = MessageType.Info, Message = $"Received a packet. Size: {packet.Data.Length} | Sender: {packet.Endpoint.ToString()}." });
+                        SkaiaLogger.LogMessage(MessageType.Info, $"Received a packet. Size: {packet.Data.Length} | Sender: {packet.Endpoint.ToString()}.");
                     }
                 }
 
@@ -95,7 +95,7 @@ namespace SkaiaLib.Sockets
                 while (DequeueTransmitPacketQueue(out Packet sendPckt))
                 {
                     socket.Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
-                    SkaiaLogger.Log(new LogMessage { Type = MessageType.Info, Message = $"Sent a packet. Size: {sendPckt.Data.Length} | Receiver: {sendPckt.Endpoint.ToString()}." });
+                    SkaiaLogger.LogMessage(MessageType.Info, $"Sent a packet. Size: {sendPckt.Data.Length} | Receiver: {sendPckt.Endpoint.ToString()}.");
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace SkaiaLib.Sockets
         void EnqueueReceivedPacket(Packet packet)
         { 
             inQueue.Enqueue(packet);
-            SkaiaLogger.Log(new LogMessage { Type = MessageType.Debug, Message = "Enqueued a received packet." });
+            SkaiaLogger.LogMessage(MessageType.Debug, "Enqueued a received packet.");
         }
 
 
@@ -127,7 +127,7 @@ namespace SkaiaLib.Sockets
         /// <param name="packet"> Packet to queue. </param>
         public void EnqueuePacketToSend(Packet packet)
         {
-            SkaiaLogger.Log(new LogMessage { Type = MessageType.Debug, Message = "Enqueued a packet to send." });
+            SkaiaLogger.LogMessage(MessageType.Debug, "Enqueued a packet to send.");
             outQueue.Enqueue(packet);
         }
 

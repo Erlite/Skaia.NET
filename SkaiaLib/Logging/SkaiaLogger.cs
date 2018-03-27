@@ -20,12 +20,23 @@ namespace SkaiaLib.Logging
         public static Action<LogMessage> OnMessageLogged;
 
         /// <summary>
-        /// Log a message, fires the OnMessageLogged event.
+        /// Log a message, fires the <seealso cref="OnMessageLogged"/> event.
         /// </summary>
         /// <param name="message"> The LogMessage to log. </param>
-        public static void Log(LogMessage message)
+        public static void LogMessage(LogMessage message)
         {
             OnMessageLogged(message);
+        }
+
+        /// <summary>
+        /// Log a message, fires the <seealso cref="OnMessageLogged"/> event
+        /// </summary>
+        /// <param name="type"> Type of the message to log. </param>
+        /// <param name="message"> The message to log. </param>
+        /// <param name="ex"> The exception linked to the message if any. </param>
+        public static void LogMessage(MessageType type, string message, Exception ex = null)
+        {
+            OnMessageLogged(new LogMessage { Type = type, Message = message, Exception = ex });
         }
     }
 }

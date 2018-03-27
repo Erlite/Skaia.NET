@@ -10,10 +10,10 @@ namespace SkaiaLib.Logging
     [System.Flags]
     public enum MessageType
     {
-        Info = 1 << 1,
-        Debug = 1 << 2,
-        Error = 1 << 3,
-        Critical = 1 << 4,
-        Fatal = 1 << 5
+        Info,
+        Debug,
+        Critical,
+        Error,
+        Fatal
     }
 }
