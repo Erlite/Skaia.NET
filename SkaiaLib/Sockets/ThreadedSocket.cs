@@ -46,21 +46,11 @@ namespace SkaiaLib.Sockets
             }
             catch (SocketException ex)
             {
-                LogMessage log = new LogMessage
-                {
-                    Type = MessageType.Fatal,
-                    Message = "There was an error accessing the socket on the specified endpoint.",
-                    Exception = ex
-                };
-                SkaiaLogger.Log(log);
+                SkaiaLogger.LogMessage(MessageType.Fatal, "There was an error accessing the socket on the specified endpoint.", ex);
                 return;
             }
 
-            LogMessage msg = new LogMessage
-            {
-                Type = MessageType.Info,
-                Message = "Socket started."
-            };
+            SkaiaLogger.LogMessage(MessageType.Info, "Socket started.");
         }
 
         /// <summary>
