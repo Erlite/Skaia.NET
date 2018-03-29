@@ -101,7 +101,7 @@ namespace SkaiaLib.Sockets
                 // Send queued data
                 while (DequeueTransmitPacketQueue(out Packet sendPckt))
                 {
-                    socket.Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
+                    Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
                 }
             }
         }

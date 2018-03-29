@@ -16,8 +16,8 @@ namespace SkaiaLib.Sockets
 {
     public class UDPSocket : BaseSocket
     {
-        private SafeQueue<Packet> inQueue;
-        private SafeQueue<Packet> outQueue;
+        private SafeQueue<Packet> inQueue = new SafeQueue<Packet>();
+        private SafeQueue<Packet> outQueue = new SafeQueue<Packet>();
 
         public Socket BaseSocket { get { return Socket; } }
 
