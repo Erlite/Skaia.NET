@@ -7,9 +7,11 @@
 
 using SkaiaLib.Logging;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace SkaiaLib.Utils
 {
@@ -54,6 +56,22 @@ namespace SkaiaLib.Utils
                 return IPAddress.Parse("127.0.0.1");
 
             return address;
+        }
+
+        /// <summary>
+        /// Sets the connection reset on a socket.
+        /// </summary>
+        /// <param name="s"></param>
+        public static void SetConnReset(Socket s)
+        {
+            try
+            {
+                const uint IOC_IN = 0x80000000;
+                const uint IOC_VENDOR = 0x18000000;
+                uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
+                s.IOControl((int)SIO_UDP_CONNRESET, new byte[] { Convert.ToByte(false) }, null);
+            }
+            catch { }
         }
     }
 }
