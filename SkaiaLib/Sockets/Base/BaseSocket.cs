@@ -15,12 +15,13 @@ namespace SkaiaLib.Sockets
 {
     public abstract class BaseSocket
     {
+        public abstract Socket Socket { get; protected set; }
+
         private EndPoint recvEndpoint;
         protected abstract byte[] RecvBuffer { get; }
         protected abstract EndPoint LocalEndpoint { get; set; }
         protected abstract SafeQueue<Packet> InQueue { get; }
         protected abstract SafeQueue<Packet> OutQueue { get; }
-        protected abstract Socket Socket { get; set; }
 
         public abstract void BindSocket(EndPoint localEndpoint);
 
