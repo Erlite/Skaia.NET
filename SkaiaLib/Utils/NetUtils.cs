@@ -12,6 +12,8 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace SkaiaLib.Utils
 {
@@ -72,6 +74,36 @@ namespace SkaiaLib.Utils
                 s.IOControl((int)SIO_UDP_CONNRESET, new byte[] { Convert.ToByte(false) }, null);
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Convert an object to a byte array.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static byte[] ObjectToByteArray(object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, obj);
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Convert a byte array to an object.
+        /// </summary>
+        /// <param name="arrBytes"></param>
+        /// <returns></returns>
+        public static object ByteArrayToObject(byte[] arrBytes)
+        {
+            MemoryStream memStream = new MemoryStream();
+            BinaryFormatter binForm = new BinaryFormatter();
+            memStream.Write(arrBytes, 0, arrBytes.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            object obj = (object)binForm.Deserialize(memStream);
+            return obj;
         }
     }
 }

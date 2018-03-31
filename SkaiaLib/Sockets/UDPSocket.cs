@@ -18,10 +18,10 @@ namespace SkaiaLib.Sockets
     {
         private SafeQueue<Packet> inQueue = new SafeQueue<Packet>();
         private SafeQueue<Packet> outQueue = new SafeQueue<Packet>();
+        private Socket socket;
 
-        public Socket BaseSocket { get { return Socket; } }
+        public override Socket Socket { get { return socket; } protected set { socket = value; } }
 
-        protected sealed override Socket Socket { get; set; }
         protected sealed override EndPoint LocalEndpoint { get; set; }
         protected override byte[] RecvBuffer { get; } = new byte[4096];
         protected override SafeQueue<Packet> InQueue { get { return inQueue; } }

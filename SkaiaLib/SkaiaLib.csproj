@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ConnectionManager.cs" />
+    <Compile Include="Core\PacketDispatcher.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\MessageType.cs" />
     <Compile Include="Logging\SkaiaLogger.cs" />
@@ -49,7 +50,6 @@
     <Compile Include="Sockets\UDPSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Surrogates\SafeQueue.cs" />
-    <Compile Include="Utils\Dispatcher.cs" />
     <Compile Include="Utils\NetUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
