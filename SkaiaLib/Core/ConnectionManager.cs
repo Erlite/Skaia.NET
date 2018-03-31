@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Handle dispatching packets and keeping virtual connections alive.
+// Purpose: Handle receiving/sending packets and keeping virtual connections alive.
 // ---------------------------------------------------------------------------
 
 using SkaiaLib.Sockets;
