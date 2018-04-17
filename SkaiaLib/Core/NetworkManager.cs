@@ -16,7 +16,7 @@ namespace SkaiaLib.Core
 {
     public static class NetworkManager
     {
-        public static Dictionary<byte, IPEndPoint> Connections { get; } = new Dictionary<byte, IPEndPoint>();
+        public static Dictionary<byte, IPEndPoint> Connections { get; private set; } = new Dictionary<byte, IPEndPoint>();
         public static BaseSocket CoreSocket { get; private set; }
         public static Thread SocketThread { get; private set; }
         public static bool Started { get; private set; }
@@ -24,7 +24,7 @@ namespace SkaiaLib.Core
         public static void Start(int port) => Start(new UDPSocket(), port);
         public static void Start(BaseSocket socket, int port)
         {
-            if (CoreSocket != null)
+            if (Started)
             {
                 SkaiaLogger.LogMessage(MessageType.Error, "Cannot attempt to start ConnectionManager: already started.");
                 return;
@@ -44,6 +44,17 @@ namespace SkaiaLib.Core
             };
             SocketThread.Start();
             Started = true;
+        }
+
+        public static void Stop()
+        {
+            SkaiaLogger.LogMessage(MessageType.Info, "Stopping server...");
+            // TODO: Tell all clients the server is closing.
+            CoreSocket.Socket.Close();
+            Connections = new Dictionary<byte, IPEndPoint>();
+            Started = false;
+            SocketThread.Abort();
+            SkaiaLogger.LogMessage(MessageType.Info, "Server succesfully stopped.");
         }
     }
 }
