@@ -15,6 +15,7 @@ using System.Threading;
 
 namespace SkaiaLib.Core
 {
+    // TODO: Make this a normal class and have an instance of this inside NetworkManager.
     public static class PacketDispatcher<T>
     {
         public static Thread DispatcherThread;
@@ -55,11 +56,11 @@ namespace SkaiaLib.Core
         {
             if (Started)
             {
-                SkaiaLogger.LogMessage(MessageType.Error, "Cannot attempt to start PacketDispatcher: already started.");
+                SkaiaLogger.LogMessage(MessageType.Error, "Cannot start PacketDispatcher: already started.");
                 return;
             }
 
-            if (!ConnectionManager.Started)
+            if (!NetworkManager.Started)
             {
                 SkaiaLogger.LogMessage(MessageType.Error, "Cannot start PacketDispatcher: ConnectionManager wasn't started.");
             }
@@ -80,7 +81,7 @@ namespace SkaiaLib.Core
         {
             while (true)
             {
-                while (ConnectionManager.CoreSocket.DequeueReceivedPacketQueue(out Packet packet))
+                while (NetworkManager.CoreSocket.DequeueReceivedPacketQueue(out Packet packet))
                 {
                     object data = NetUtils.ByteArrayToObject(packet.Data);
                     Type evntType = data.GetType();

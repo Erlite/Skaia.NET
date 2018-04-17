@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace SkaiaLib.Core
 {
-    public static class ConnectionManager
+    public static class NetworkManager
     {
         public static Dictionary<byte, IPEndPoint> Connections { get; } = new Dictionary<byte, IPEndPoint>();
         public static BaseSocket CoreSocket { get; private set; }
