@@ -5,9 +5,7 @@
 // Purpose: Base socket implementation.
 // -----------------------------------------
 
-using Skaia.Logging;
 using Skaia.Surrogates;
-using System;
 using System.Net;
 using System.Net.Sockets;
 
