@@ -2,7 +2,7 @@
 // ---------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Dispatch received packets using callbacks.
+// Purpose: Dispatch objects using callbacks.
 // ---------------------------------------------------
 
 using SkaiaLib.Logging;
@@ -12,28 +12,32 @@ using System.Collections.Generic;
 
 namespace SkaiaLib.Core
 {
-    // TODO: Make this a normal class and have an instance of this inside NetworkManager.
+    /// <summary>
+    /// Dispatch a specific type to a callback.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Dispatcher<T>
     {
-        static Dictionary<Type, Action<EndPoint, object>> callbacks = new Dictionary<Type, Action<EndPoint, object>>();
+        Dictionary<Type, Action<EndPoint, T>> callbacks = new Dictionary<Type, Action<EndPoint, T>>();
 
         /// <summary>
         /// Add a callback for a specific type.
         /// </summary>
         /// <typeparam name="C"> Type to which the callback is linked. </typeparam>
         /// <param name="callback"> Callback to invoke when the type is dispatched. </param>
-        public static void AddCallback<C>(Action<EndPoint, object> callback) where C : T
-        {
-            callbacks.Add(typeof(C), (ep, obj) => callback(ep, obj));
+        public void AddCallback<C>(Action<EndPoint, C> callback) where C : T
+        { 
+            callbacks.Add(typeof(C), (ep, obj) => callback(ep, (C)obj));
         }
+
 
         /// <summary>
         /// Invoke a callback for a specific type.
         /// </summary>
         /// <param name="evnt"> The specific type to invoke. </param>
-        public static void CallEvent(Type evnt, EndPoint caller, object data)
+        public void CallEvent(Type evnt, EndPoint caller, T data)
         {
-            if (callbacks.TryGetValue(evnt, out Action<EndPoint, object> cback))
+            if (callbacks.TryGetValue(evnt, out Action<EndPoint, T> cback))
             {
                 cback(caller, data);
             }
