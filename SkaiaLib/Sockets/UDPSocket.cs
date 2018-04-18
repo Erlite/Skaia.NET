@@ -101,5 +101,38 @@ namespace Skaia.Sockets
             sender = null;
             return -1;
         }
+
+
+        /// <summary>
+        /// To be called once, and in a new thread to avoid blocking.
+        /// Handles receiving/sending packets.
+        /// </summary>
+        public override void Loop()
+        {
+            while (true)
+            {
+                // If something has been received on the socket.
+                if (Poll(1))
+                {
+                    // Read the data
+                    int recvBytes = Receive(RecvBuffer, RecvBuffer.Length, out EndPoint sender);
+
+                    // If there's more than 0 bytes copy the data into the buffer and enqueue.
+                    if (recvBytes > 0)
+                    {
+                        byte[] data = new byte[recvBytes];
+                        Buffer.BlockCopy(RecvBuffer, 0, data, 0, recvBytes);
+                        Packet packet = new Packet { Data = data, Endpoint = sender };
+                        EnqueueReceivedPacket(packet);
+                    }
+                }
+
+                // Send queued data
+                while (DequeueTransmitPacketQueue(out Packet sendPckt))
+                {
+                    Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
+                }
+            }
+        }
     }
 }
