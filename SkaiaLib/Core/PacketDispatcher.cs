@@ -6,21 +6,15 @@
 // ---------------------------------------------------
 
 using SkaiaLib.Logging;
-using SkaiaLib.Sockets;
-using SkaiaLib.Utils;
 using System;
 using System.Net;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace SkaiaLib.Core
 {
     // TODO: Make this a normal class and have an instance of this inside NetworkManager.
-    public static class PacketDispatcher<T>
+    public class Dispatcher<T>
     {
-        public static Thread DispatcherThread;
-        public static bool Started { get; private set; }
-
         static Dictionary<Type, Action<EndPoint, object>> callbacks = new Dictionary<Type, Action<EndPoint, object>>();
 
         /// <summary>
@@ -46,48 +40,6 @@ namespace SkaiaLib.Core
             else
             {
                 SkaiaLogger.LogMessage(MessageType.Error, $"Couldn't find any callback of type {evnt} to Dispatch");
-            }
-        }
-
-        /// <summary>
-        /// Start the packet dispatcher.
-        /// </summary>
-        public static void Start()
-        {
-            if (Started)
-            {
-                SkaiaLogger.LogMessage(MessageType.Error, "Cannot start PacketDispatcher: already started.");
-                return;
-            }
-
-            if (!NetworkManager.Started)
-            {
-                SkaiaLogger.LogMessage(MessageType.Error, "Cannot start PacketDispatcher: ConnectionManager wasn't started.");
-            }
-
-            DispatcherThread = new Thread(DispatcherLoop)
-            {
-                Name = "SkaiaLib Packet Dispatcher Thread",
-                IsBackground = true
-            };
-            DispatcherThread.Start();
-            Started = true;
-        }
-
-        /// <summary>
-        /// Start the dispatcher loop.
-        /// </summary>
-        private static void DispatcherLoop()
-        {
-            while (true)
-            {
-                while (NetworkManager.CoreSocket.DequeueReceivedPacketQueue(out Packet packet))
-                {
-                    object data = NetUtils.ByteArrayToObject(packet.Data);
-                    Type evntType = data.GetType();
-                    CallEvent(evntType, packet.Endpoint, data);
-                }
-                Thread.Sleep(1);
             }
         }
     }

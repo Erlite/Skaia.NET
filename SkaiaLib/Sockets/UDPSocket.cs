@@ -14,8 +14,9 @@ using SkaiaLib.Surrogates;
 
 namespace SkaiaLib.Sockets
 {
-    public class UDPSocket : BaseSocket
+    public sealed class UDPSocket : BaseSocket
     {
+        private EndPoint recvEndpoint;
         private SafeQueue<Packet> inQueue = new SafeQueue<Packet>();
         private SafeQueue<Packet> outQueue = new SafeQueue<Packet>();
         private Socket socket;
@@ -27,7 +28,11 @@ namespace SkaiaLib.Sockets
         protected override SafeQueue<Packet> InQueue { get { return inQueue; } }
         protected override SafeQueue<Packet> OutQueue { get { return outQueue; } }
 
-        public sealed override void BindSocket(EndPoint localEndpoint)
+        /// <summary>
+        /// Bind the socket to the local endpoint.
+        /// </summary>
+        /// <param name="localEndpoint"></param>
+        public override void BindSocket(EndPoint localEndpoint)
         {
             // Create a new IPv4 UDP Socket.
             Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)
@@ -41,7 +46,60 @@ namespace SkaiaLib.Sockets
 
             SkaiaLogger.LogMessage(MessageType.Info, $"Bound socket to {localEndpoint.ToString()}");
             // Set the connection reset.
+
+
             NetUtils.SetConnReset(Socket);
+        }
+
+        /// <summary>
+        /// Poll the socket to see if anything is waiting to be received.
+        /// </summary>
+        /// <param name="timeout"> The amount of time to wait for a response. 1 for instant check. </param>
+        /// <returns> True if something is waiting to be received. </returns>
+        public override bool Poll(int timeout)
+        {
+            try
+            {
+                return Socket.Poll(timeout, SelectMode.SelectRead);
+            }
+            catch (Exception ex)
+            {
+                SkaiaLogger.LogMessage(MessageType.Error, "Failed to poll on socket", ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Send data to the socket.
+        /// </summary>
+        /// <param name="data"> The data to send. </param>
+        /// <param name="length"> The amount of data to send. Set to data length to send everything. </param>
+        /// <param name="sender"> The data's receiver. </param>
+        /// <returns></returns>
+        public override int Send(byte[] data, int length, EndPoint receiver)
+        {
+            return Socket.SendTo(data, 0, length, SocketFlags.None, receiver);
+        }
+
+        /// <summary>
+        /// Receive awaiting data from the socket.
+        /// </summary>
+        /// <param name="buffer"> The buffer to copy the data onto. </param>
+        /// <param name="length"> The amount of data to copy. </param>
+        /// <param name="sender"> The data's sender. </param>
+        /// <returns> The amount of data copied. -1 if nothing. </returns>
+        public override int Receive(byte[] buffer, int length, out EndPoint sender)
+        {
+            int recvBytes = Socket.ReceiveFrom(buffer, 0, length, SocketFlags.None, ref recvEndpoint);
+
+            if (recvBytes > 0)
+            {
+                sender = recvEndpoint;
+                return recvBytes;
+            }
+
+            sender = null;
+            return -1;
         }
     }
 }
