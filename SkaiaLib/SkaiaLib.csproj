@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\NetworkManager.cs" />
-    <Compile Include="Core\PacketDispatcher.cs" />
+    <Compile Include="Core\Dispatcher.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\MessageType.cs" />
     <Compile Include="Logging\SkaiaLogger.cs" />
