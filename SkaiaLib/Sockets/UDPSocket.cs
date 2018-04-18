@@ -5,14 +5,14 @@
 // Purpose: Socket implementation to use UDP over IPv4.
 // ----------------------------------------------------
 
-using SkaiaLib.Logging;
-using SkaiaLib.Utils;
+using Skaia.Logging;
+using Skaia.Utils;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using SkaiaLib.Surrogates;
+using Skaia.Surrogates;
 
-namespace SkaiaLib.Sockets
+namespace Skaia.Sockets
 {
     public sealed class UDPSocket : BaseSocket
     {

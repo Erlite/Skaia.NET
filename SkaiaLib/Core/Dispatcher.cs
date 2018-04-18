@@ -5,12 +5,12 @@
 // Purpose: Dispatch objects using callbacks.
 // ---------------------------------------------------
 
-using SkaiaLib.Logging;
+using Skaia.Logging;
 using System;
 using System.Net;
 using System.Collections.Generic;
 
-namespace SkaiaLib.Core
+namespace Skaia.Core
 {
     /// <summary>
     /// Dispatch a specific type to a callback.

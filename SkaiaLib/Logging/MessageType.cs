@@ -5,7 +5,7 @@
 // Purpose: Message type for logging.
 // -----------------------------------------
 
-namespace SkaiaLib.Logging
+namespace Skaia.Logging
 {
     [System.Flags]
     public enum MessageType

@@ -5,7 +5,7 @@
 // Purpose: Regroup networking utilities.
 // ------------------------------------------
 
-using SkaiaLib.Logging;
+using Skaia.Logging;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -15,7 +15,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace SkaiaLib.Utils
+namespace Skaia.Utils
 {
     public static class NetUtils
     {

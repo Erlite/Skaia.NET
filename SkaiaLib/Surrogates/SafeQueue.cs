@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace SkaiaLib.Surrogates
+namespace Skaia.Surrogates
 {
     public class SafeQueue<T>
     {

@@ -7,7 +7,7 @@
 
 using System;
 
-namespace SkaiaLib.Logging
+namespace Skaia.Logging
 {
     public struct LogMessage
     {

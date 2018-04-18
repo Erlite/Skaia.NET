@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SkaiaLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Skaia.NET")]
+[assembly: AssemblyDescription("Skaia.NET Networking Library for Realtime games.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SkaiaLib")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyProduct("Skaia.NET")]
+[assembly: AssemblyCopyright("Copyright © Younes Meziane 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

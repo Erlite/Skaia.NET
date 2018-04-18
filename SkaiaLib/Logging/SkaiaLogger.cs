@@ -2,15 +2,15 @@
 // -----------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Logger for SkaiaLib.
+// Purpose: Logger for Skaia.
 // -----------------------------------------
 
 using System;
 
-namespace SkaiaLib.Logging
+namespace Skaia.Logging
 {
     /// <summary>
-    /// Hook onto the <seealso cref="OnMessageLogged"/> event to receive logs from SkaiaLib.
+    /// Hook onto the <seealso cref="OnMessageLogged"/> event to receive logs from Skaia.
     /// </summary>
     public static class SkaiaLogger
     {

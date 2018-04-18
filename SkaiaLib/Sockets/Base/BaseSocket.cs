@@ -5,13 +5,13 @@
 // Purpose: Base socket implementation.
 // -----------------------------------------
 
-using SkaiaLib.Logging;
-using SkaiaLib.Surrogates;
+using Skaia.Logging;
+using Skaia.Surrogates;
 using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace SkaiaLib.Sockets
+namespace Skaia.Sockets
 {
     public abstract class BaseSocket
     {

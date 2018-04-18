@@ -7,7 +7,7 @@
 
 using System.Net;
 
-namespace SkaiaLib.Sockets
+namespace Skaia.Sockets
 {
     /// <summary>
     /// Regroups the data received from an endpoint/the data to send to an endpoint.
