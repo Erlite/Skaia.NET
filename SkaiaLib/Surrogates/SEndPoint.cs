@@ -5,12 +5,13 @@
 // Purpose: Provide a lightweight IP/Port pair.
 // --------------------------------------------
 
+using System;
 using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Skaia.Surrogates
 {
-    [StructLayout(LayoutKind.Explicit, Pack = 1)]
+    [Serializable, StructLayout(LayoutKind.Explicit, Pack = 1)]
     public struct SEndPoint
     {
         [FieldOffset(0)]
