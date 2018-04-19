@@ -7,6 +7,7 @@
 
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace Skaia.Surrogates
@@ -31,6 +32,78 @@ namespace Skaia.Surrogates
                 IPv4 = value.Address.GetAddressBytes(),
                 Port = value.Port
             };
+        }
+
+        /// <summary>
+        /// Create a new instance of SEndPoint using a byte array for the address.
+        /// </summary>
+        /// <param name="address"> The endpoint's IPv4 address. </param>
+        /// <param name="port"> The endpoint's port. </param>
+        /// <returns> The corresponding SEndPoint. </returns>
+        public static SEndPoint Create(byte[] address, int port)
+        {
+            if (address.Length != 4)
+            {
+                throw new FormatException("An address must consist of 4 bytes.");
+            }
+
+            return new SEndPoint
+            {
+                IPv4 = address,
+                Port = port
+            };
+        }
+
+        /// <summary>
+        /// Create a new instance of SEndPoint using an IPAddress for the address.
+        /// </summary>
+        /// <param name="address"> The endpoint's IPv4 address. </param>
+        /// <param name="port"> The endpoint's port. </param>
+        /// <returns> The corresponding SEndPoint. </returns>
+        public static SEndPoint Create(IPAddress address, int port)
+        {
+            if (address.AddressFamily != AddressFamily.InterNetwork)
+            {
+                throw new FormatException("The AddressFamily of IPAddress must be AddressFamily.InterNetwork (IPv4)");
+            }
+
+            return new SEndPoint
+            {
+                IPv4 = address.GetAddressBytes(),
+                Port = port
+            };
+        }
+
+        /// <summary>
+        /// Create a new instance of SEndPoint using a string for the address.
+        /// </summary>
+        /// <param name="address"> The endpoint's IPv4 address. </param>
+        /// <param name="port"> The endpoint's port. </param>
+        /// <returns> The corresponding SEndPoint. </returns>
+        public static SEndPoint Create(string address, int port)
+        {
+            if (string.IsNullOrEmpty(address))
+            {
+                throw new FormatException("Address cannot be null or empty.");
+            }
+
+            if (IPAddress.TryParse(address, out IPAddress adr))
+            {
+                if (adr.AddressFamily != AddressFamily.InterNetwork)
+                {
+                    throw new FormatException("The AddressFamily of IPAddress must be AddressFamily.InterNetwork (IPv4)");
+                }
+
+                return new SEndPoint
+                {
+                    IPv4 = IPAddress.Parse(address).GetAddressBytes(),
+                    Port = port
+                };
+            }
+            else
+            {
+                throw new FormatException("Parameter address is an invalid IP.");
+            }
         }
     }
 }
