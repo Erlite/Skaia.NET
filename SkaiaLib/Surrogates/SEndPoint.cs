@@ -12,19 +12,30 @@ using System.Runtime.InteropServices;
 
 namespace Skaia.Surrogates
 {
+    /// <summary>
+    /// Lighter surrogate for <seealso cref="IPEndPoint"/>
+    /// </summary>
     [Serializable, StructLayout(LayoutKind.Explicit, Pack = 1)]
-    public struct SEndPoint
+    public struct SEndPoint : IEquatable<SEndPoint>
     {
         [FieldOffset(0)]
         private byte[] IPv4;
         [FieldOffset(4)]
         private int Port;
 
+        /// <summary>
+        /// Convert a SEndPoint into an IPEndPoint.
+        /// </summary>
+        /// <param name="value"> The SEndPoint to convert. </param>
         public static implicit operator IPEndPoint(SEndPoint value)
         {
             return new IPEndPoint(new IPAddress(value.IPv4), value.Port);
         }
 
+        /// <summary>
+        /// Convert an IPEndPoint to a SEndPoint.
+        /// </summary>
+        /// <param name="value"> The IPEndPoint to convert. </param>
         public static implicit operator SEndPoint(IPEndPoint value)
         {
             return new SEndPoint
@@ -104,6 +115,19 @@ namespace Skaia.Surrogates
             {
                 throw new FormatException("Parameter address is an invalid IP.");
             }
+        }
+
+        /// <summary>
+        /// Check if this is equal to another SEndPoint.
+        /// </summary>
+        /// <param name="other"> The other SEndPoint to check. </param>
+        /// <returns> True if equal. </returns>
+        public bool Equals(SEndPoint other)
+        {
+            IPAddress address = new IPAddress(IPv4);
+            IPAddress otherAddress = new IPAddress(other.IPv4);
+
+            return address.ToString() == otherAddress.ToString() && Port == other.Port;
         }
     }
 }

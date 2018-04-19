@@ -9,6 +9,9 @@ using System.Net;
 
 namespace Skaia.Events
 {
+    /// <summary>
+    /// Base class for all network events that must be sent accross the network.
+    /// </summary>
     public abstract class NetEvent
     {
         /// <summary>
@@ -20,6 +23,7 @@ namespace Skaia.Events
         /// <summary>
         /// The ID of this NetEvent.
         /// </summary>
+        // HACK: Might be possible to take a smaller data type than int.
         public abstract int ID { get; internal set; }
 
         /// <summary>

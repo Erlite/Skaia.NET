@@ -15,8 +15,8 @@ namespace Skaia.Core
     /// <summary>
     /// Dispatch a specific type to a callback.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class Dispatcher<T>
+    /// <typeparam name="T"> The type of object to dispatch. </typeparam>
+    public class Dispatcher<T> 
     {
         Dictionary<Type, Action<EndPoint, T>> callbacks = new Dictionary<Type, Action<EndPoint, T>>();
 
@@ -32,9 +32,11 @@ namespace Skaia.Core
 
 
         /// <summary>
-        /// Invoke a callback for a specific type.
+        /// 
         /// </summary>
-        /// <param name="evnt"> The specific type to invoke. </param>
+        /// <param name="evnt"></param>
+        /// <param name="caller"></param>
+        /// <param name="data"></param>
         public void CallEvent(Type evnt, EndPoint caller, T data)
         {
             if (callbacks.TryGetValue(evnt, out Action<EndPoint, T> cback))
