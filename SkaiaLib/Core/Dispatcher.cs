@@ -39,12 +39,12 @@ namespace Skaia.Core
         {
             if (callbacks.TryGetValue(evnt, out Action<EndPoint, T> cback))
             {
-                // TODO: Find out the the fook I can cast that to the original type. Pretty sure I can't. Tests needed.
+                // TODO: Find out the the fook I can cast that to the original type. Maybe on the action's method arguments itself.
                 cback(caller, data);
             }
             else
             {
-
+                // TODO: Should throw somehow? Maybe make that an option.
                 SkaiaLogger.LogMessage(MessageType.Error, $"Couldn't find any callback of type {evnt} to Dispatch");
             }
         }
