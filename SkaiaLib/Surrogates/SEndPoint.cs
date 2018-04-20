@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 namespace Skaia.Surrogates
 {
     /// <summary>
-    /// Lighter surrogate for <seealso cref="IPEndPoint"/>
+    /// Lighter surrogate for IPEndPoint. <seealso cref="IPEndPoint"/>
     /// </summary>
     [Serializable, StructLayout(LayoutKind.Explicit, Pack = 1)]
     public struct SEndPoint : IEquatable<SEndPoint>
