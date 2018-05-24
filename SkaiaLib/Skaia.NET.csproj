@@ -49,9 +49,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Client.cs" />
+    <Compile Include="Core\Enums\ClientList.cs" />
+    <Compile Include="Core\Enums\ConnectionEnumerator.cs" />
+    <Compile Include="Core\Enums\ConnectionState.cs" />
+    <Compile Include="Core\Enums\NetworkMode.cs" />
     <Compile Include="Core\NetworkManager.cs" />
     <Compile Include="Core\Dispatcher.cs" />
-    <Compile Include="Core\Node.cs" />
+    <Compile Include="Core\NetworkSettings.cs" />
     <Compile Include="Events\NetEvent.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\MessageType.cs" />
