@@ -22,16 +22,15 @@ namespace Skaia.Core
     public static class NetworkManager
     {
         private static BaseSocket coreSocket;
-        private static Node localNode;
+        private static Client localMachine;
         private static NetworkMode netMode;
         private static Thread socketThread;
 
         #region Public API
         /// <summary>
-        /// List of nodes on the current network.
+        /// List of clients on the current network.
         /// </summary>
-        // TODO: Make a custom container for the Node list to allow checking for stupid things like two nodes with the same ID.
-        public static List<Node> Nodes { get; private set; } = new List<Node>();
+        public static ClientList Clients { get; private set; }
 
         /// <summary>
         /// The dispatcher that handles routing network events into their respective callbacks.
@@ -46,18 +45,18 @@ namespace Skaia.Core
         /// <summary>
         /// The local machine's node.
         /// </summary>
-        public static Node LocalNode
+        public static Client LocalClient
         {
             get
             {
                 if (!IsStarted)
                 {
-                    throw new InvalidOperationException("Cannot retrieve the local node when the NetworkManager isn't started.");
+                    throw new InvalidOperationException("Cannot retrieve the local client when the NetworkManager isn't started.");
                 }
 
-                return localNode;
+                return localMachine;
             }
-            private set { localNode = value; }
+            private set { localMachine = value; }
         }
 
         /// <summary>
@@ -94,7 +93,7 @@ namespace Skaia.Core
         /// <param name="socket"> The socket to use. </param>
         /// <param name="port"> The port to bind to. Will default to a random open port for clients. </param>
         /// <param name="mode"> The network mode to use. </param>
-        public static void StartNetwork(BaseSocket socket, int port, NetworkMode mode)
+        public static void StartNetwork(BaseSocket socket, NetworkSettings settings, NetworkMode mode)
         {
             if (IsStarted)
             {
@@ -103,9 +102,8 @@ namespace Skaia.Core
 
             coreSocket = socket;
             IPAddress address = NetUtils.GetLocalEndpoint();
-            port = mode == NetworkMode.Server ? port : 0;
 
-            SEndPoint local = SEndPoint.Create(address.GetAddressBytes(), port);
+            SEndPoint local = SEndPoint.Create(address.GetAddressBytes(), settings.Port);
             coreSocket.BindSocket(local);
             NetUtils.SetConnReset(coreSocket.Socket);
 

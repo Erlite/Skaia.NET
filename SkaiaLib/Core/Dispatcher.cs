@@ -37,7 +37,8 @@ namespace Skaia.Core
         /// <returns> True if the specified Type has a callback. </returns>
         public bool TryInvokeCallback(Type type, T data)
         {
-            if (callbacks.TryGetValue(type, out Action<T> cback))
+            Action<T> cback;
+            if (callbacks.TryGetValue(type, out cback))
             {
                 cback(data);
                 return true;
