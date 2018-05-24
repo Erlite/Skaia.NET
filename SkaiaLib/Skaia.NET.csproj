@@ -65,8 +65,6 @@
     <Compile Include="Utils\NetUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="~DLLs\UnityEditor.dll" />
-    <Content Include="~DLLs\UnityEngine.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
