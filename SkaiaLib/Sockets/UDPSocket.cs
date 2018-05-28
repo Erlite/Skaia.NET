@@ -74,7 +74,7 @@ namespace Skaia.Sockets
         /// </summary>
         /// <param name="data"> The data to send. </param>
         /// <param name="length"> The amount of data to send. Set to data length to send everything. </param>
-        /// <param name="sender"> The data's receiver. </param>
+        /// <param name="receiver"> The data's receiver. </param>
         /// <returns></returns>
         public override int Send(byte[] data, int length, EndPoint receiver)
         {
