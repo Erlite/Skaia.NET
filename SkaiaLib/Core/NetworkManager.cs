@@ -1,9 +1,9 @@
 ﻿
-// ---------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
 // Purpose: Handle receiving/sending packets and keeping virtual connections alive.
-// ---------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
 
 using Skaia.Events;
 using Skaia.Sockets;
@@ -25,6 +25,8 @@ namespace Skaia.Core
         private static Client localMachine;
         private static NetworkMode netMode;
         private static Thread socketThread;
+
+        internal static NetworkSettings Settings;
 
         #region Public API
         /// <summary>
@@ -91,7 +93,7 @@ namespace Skaia.Core
         /// Starts the NetworkManager.
         /// </summary>
         /// <param name="socket"> The socket to use. </param>
-        /// <param name="port"> The port to bind to. Will default to a random open port for clients. </param>
+        /// <param name="settings"> The settings used by the network manager. </param>
         /// <param name="mode"> The network mode to use. </param>
         public static void StartNetwork(BaseSocket socket, NetworkSettings settings, NetworkMode mode)
         {
@@ -115,6 +117,7 @@ namespace Skaia.Core
 
             socketThread.Start();
             netMode = mode;
+            Settings = settings;
             IsStarted = true;
         }
         #endregion Public Methods
