@@ -5,16 +5,15 @@
 // Purpose: Provide an abstract compression class.
 // ----------------------------------------------------
 
-using Skaia.Utils;
-using System;
+
+// -----------------------------------------------------
+// Copyright (c) 2018 All Rights Reserved
+// Author: Younes Meziane
+// Purpose: Provide an interface for compressible types.
+// -----------------------------------------------------
 
 namespace Skaia.Serialization
 {
-    /// <summary>
-    /// Base class to compress numeric types.
-    /// Works best for numeric types, else well you're on your own.
-    /// </summary>
-    /// <typeparam name="T"> The type to compress. </typeparam>
     public interface ICompressible<T> where T : struct
     {
         // The minimum possible value of T.

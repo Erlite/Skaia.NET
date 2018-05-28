@@ -2,7 +2,7 @@
 // ----------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Provide an abstract compression class.
+// Purpose: Provide a compressed short surrogate.
 // ----------------------------------------------------
 
 using Skaia.Utils;
