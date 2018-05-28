@@ -13,8 +13,15 @@ namespace Skaia.Serialization
     /// <summary>
     /// A compressable short for packet serialization.
     /// </summary>
+    [Serializable]
     public class CompressedShort : ICompressible<short>
     {
+        public CompressedShort(short minValue, short maxValue)
+        {
+            MinValue = minValue;
+            MaxValue = maxValue;
+        }
+
         private short _value;
 
         /// <summary>
