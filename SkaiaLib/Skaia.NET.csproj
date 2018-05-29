@@ -56,9 +56,11 @@
     <Compile Include="Logging\MessageType.cs" />
     <Compile Include="Logging\SkaiaLogger.cs" />
     <Compile Include="Serialization\BuilderMode.cs" />
+    <Compile Include="Serialization\Compression\CompressedInt.cs" />
+    <Compile Include="Serialization\Compression\CompressedUShort.cs" />
     <Compile Include="Serialization\Compression\ICompressible.cs" />
     <Compile Include="Serialization\Compression\CompressedShort.cs" />
-    <Compile Include="Serialization\PackedBool.cs" />
+    <Compile Include="Serialization\Compression\CompressedBool.cs" />
     <Compile Include="Serialization\PacketBuilder.cs" />
     <Compile Include="Sockets\Base\BaseSocket.cs" />
     <Compile Include="Sockets\Packet.cs" />

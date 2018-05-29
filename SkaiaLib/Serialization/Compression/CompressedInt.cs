@@ -2,44 +2,41 @@
 // ----------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
-// Purpose: Provide a compressed short surrogate.
+// Purpose: Provide a compressed int surrogate.
 // ----------------------------------------------------
 
+using Skaia.Serialization;
 using Skaia.Utils;
 using System;
 
 namespace Skaia.Serialization
 {
-    /// <summary>
-    /// A compressible short for packet serialization.
-    /// </summary>
-    [Serializable]
-    public class CompressedShort : ICompressible<short>
+    public class CompressedInt : ICompressible<int>
     {
-        public CompressedShort(short minValue, short maxValue)
+        public CompressedInt(int minValue, int maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
         }
 
-        private short _value;
+        private int _value;
 
         /// <summary>
-        /// The minimum value of this short.
+        /// The minimum value of this int.
         /// </summary>
-        public short MinValue { get; }
+        public int MinValue { get; }
         /// <summary>
-        /// The maximum value of this short.
+        /// The maximum value of this int.
         /// </summary>
-        public short MaxValue { get; }
+        public int MaxValue { get; }
         /// <summary>
         /// Should the value be clamped between Min and Max?
         /// </summary>
         public bool ShouldClamp { get; set; }
         /// <summary>
-        /// The actual short.
+        /// The actual int.
         /// </summary>
-        public short Value
+        public int Value
         {
             get { return _value; }
             set
@@ -62,19 +59,19 @@ namespace Skaia.Serialization
         }
 
         /// <summary>
-        /// Compress this short into a compact byte array.
+        /// Compress this int into a compact byte array.
         /// </summary>
         public byte[] Compress()
         {
-            // Get the max range of this compressed short...
+            // Get the max range of this compressed int...
             uint range = (uint)(MaxValue - MinValue);
             // ... and the required bytes to hold it.
-            uint required = ((ICompressible<short>)this).GetRequiredBytes();
+            uint required = ((ICompressible<int>)this).GetRequiredBytes();
 
             // Now we grab the actual value to compress.
             // For that we just substract the MinValue from the current value.
-            short compressed = (short)(Value - MinValue);
-
+            int compressed = Value - MinValue;
+            
             // Convert into a byte array...
             byte[] source = BitConverter.GetBytes(compressed);
             byte[] destination = new byte[required];
@@ -85,30 +82,30 @@ namespace Skaia.Serialization
         }
 
         /// <summary>
-        /// Decompress a compressed short from a compact byte array.
+        /// Decompress a compressed int from a compact byte array.
         /// </summary>
         public void Decompress(byte[] data)
         {
-            // Make a byte array as big as the size of a short.
-            byte[] decompressed = new byte[sizeof(short)];
+            // Make a byte array as big as the size of a int.
+            byte[] decompressed = new byte[sizeof(int)];
             Array.Copy(data, decompressed, data.Length);
-            short decompressedShort = BitConverter.ToInt16(decompressed, 0);
+            int decompressedint = BitConverter.ToUInt16(decompressed, 0);
 
-            // Set the value by adding the MinValue to the decompressed short.
-            Value = (short)(MinValue + decompressedShort);
+            // Set the value by adding the MinValue to the decompressed int.
+            Value = MinValue + decompressedint;
         }
         #endregion Public Methods
 
-        uint ICompressible<short>.GetRequiredBytes()
+        uint ICompressible<int>.GetRequiredBytes()
         {
             uint range = (uint)(MaxValue - MinValue);
-            return Maths.GetRequiredBytes(range, sizeof(short));
+            return Maths.GetRequiredBytes(range, sizeof(int));
         }
 
-        // Get the underlying short by using CompressedShort as a right-hand value.
-        public static implicit operator short(CompressedShort cShort)
+        // Get the underlying int by using Compressedint as a right-hand value.
+        public static implicit operator int(CompressedInt cInt)
         {
-            return cShort.Value;
+            return cInt.Value;
         }
     }
 }
