@@ -115,7 +115,8 @@ namespace Skaia.Sockets
                 if (Poll(1))
                 {
                     // Read the data
-                    int recvBytes = Receive(RecvBuffer, RecvBuffer.Length, out EndPoint sender);
+                    EndPoint sender;
+                    int recvBytes = Receive(RecvBuffer, RecvBuffer.Length, out sender);
 
                     // If there's more than 0 bytes copy the data into the buffer and enqueue.
                     if (recvBytes > 0)
@@ -128,7 +129,8 @@ namespace Skaia.Sockets
                 }
 
                 // Send queued data
-                while (DequeueTransmitPacketQueue(out Packet sendPckt))
+                Packet sendPckt;
+                while (DequeueTransmitPacketQueue(out sendPckt))
                 {
                     Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
                 }

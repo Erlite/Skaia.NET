@@ -98,7 +98,8 @@ namespace Skaia.Surrogates
                 throw new FormatException("Address cannot be null or empty.");
             }
 
-            if (IPAddress.TryParse(address, out IPAddress adr))
+            IPAddress adr;
+            if (IPAddress.TryParse(address, out adr))
             {
                 if (adr.AddressFamily != AddressFamily.InterNetwork)
                 {
