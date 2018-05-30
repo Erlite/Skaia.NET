@@ -5,7 +5,7 @@
 // Purpose: Provide a compressed int surrogate.
 // ----------------------------------------------------
 
-using Skaia.Serialization;
+using Skaia.Logging;
 using Skaia.Utils;
 using System;
 
@@ -29,35 +29,13 @@ namespace Skaia.Serialization
         /// The maximum value of this int.
         /// </summary>
         public int MaxValue { get; }
-        /// <summary>
-        /// Should the value be clamped between Min and Max?
-        /// </summary>
-        public bool ShouldClamp { get; set; }
+
         /// <summary>
         /// The actual int.
         /// </summary>
-        public int Value
-        {
-            get { return _value; }
-            set
-            {
-                if (ShouldClamp)
-                    Clamp();
-                _value = value;
-            }
-        }
+        public int Value { get { return _value; } set { SetAndClamp(value); } }
 
         #region Public Methods
-
-        /// <summary>
-        /// Clamp this value within bounds of Min and Max value.
-        /// </summary>
-        public void Clamp()
-        {
-            Value = Math.Min(Value, MaxValue);
-            Value = Math.Max(Value, MinValue);
-        }
-
         /// <summary>
         /// Compress this int into a compact byte array.
         /// </summary>
@@ -66,7 +44,7 @@ namespace Skaia.Serialization
             // Get the max range of this compressed int...
             uint range = (uint)(MaxValue - MinValue);
             // ... and the required bytes to hold it.
-            uint required = ((ICompressible<int>)this).GetRequiredBytes();
+            uint required = Maths.GetRequiredBytes(range, sizeof(int));
 
             // Now we grab the actual value to compress.
             // For that we just substract the MinValue from the current value.
@@ -96,10 +74,17 @@ namespace Skaia.Serialization
         }
         #endregion Public Methods
 
-        uint ICompressible<int>.GetRequiredBytes()
+        // Clamps the value if necessary and sets the underlying value.
+        void SetAndClamp(int value)
         {
-            uint range = (uint)(MaxValue - MinValue);
-            return Maths.GetRequiredBytes(range, sizeof(int));
+            // Clamp value if out of bounds.
+            if (value < MinValue || value > MaxValue)
+            {
+                this.Value = value < MinValue ? MinValue : MaxValue;
+                throw new ArgumentOutOfRangeException("Value was out of compression range and has been clamped.");
+            }
+
+            this.Value = value;
         }
 
         // Get the underlying int by using Compressedint as a right-hand value.

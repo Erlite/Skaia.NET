@@ -14,7 +14,7 @@
 
 namespace Skaia.Serialization
 {
-    public interface ICompressible<T> where T : struct
+    public interface ICompressible<T>
     {
         // The minimum possible value of T.
         T MinValue { get; }
@@ -22,20 +22,9 @@ namespace Skaia.Serialization
         T MaxValue { get; }
         // The uncompressed value itself.
         T Value { get; set; }
-
-        // Should the Value be clamped within the minimum and maximum value?
-        bool ShouldClamp { get; set; }
-         
-        // Used to clamp Value between MinValue and MaxValue.
-        void Clamp();
-
-        // Gets the required bytes to serialize this value.
-        uint GetRequiredBytes();
-
         // Compress the current value.
         byte[] Compress();
-
-        // Decompress the current value.
+        // Decompress a byte array and set this value.
         void Decompress(byte[] data);
     }
 }

@@ -32,34 +32,11 @@ namespace Skaia.Serialization
         /// </summary>
         public ushort MaxValue { get; }
         /// <summary>
-        /// Should the value be clamped between Min and Max?
-        /// </summary>
-        public bool ShouldClamp { get; set; }
-        /// <summary>
         /// The actual ushort.
         /// </summary>
-        public ushort Value
-        {
-            get { return _value; }
-            set
-            {
-                if (ShouldClamp)
-                    Clamp();
-                _value = value;
-            }
-        }
+        public ushort Value {  get { return _value; } set { SetAndClamp(value); } }
 
         #region Public Methods
-
-        /// <summary>
-        /// Clamp this value within bounds of Min and Max value.
-        /// </summary>
-        public void Clamp()
-        {
-            Value = Math.Min(Value, MaxValue);
-            Value = Math.Max(Value, MinValue);
-        }
-
         /// <summary>
         /// Compress this ushort into a compact byte array.
         /// </summary>
@@ -68,7 +45,7 @@ namespace Skaia.Serialization
             // Get the max range of this compressed ushort...
             uint range = (uint)(MaxValue - MinValue);
             // ... and the required bytes to hold it.
-            uint required = ((ICompressible<ushort>)this).GetRequiredBytes();
+            uint required = Maths.GetRequiredBytes(range, sizeof(ushort));
 
             // Now we grab the actual value to compress.
             // For that we just substract the MinValue from the current value.
@@ -98,10 +75,17 @@ namespace Skaia.Serialization
         }
         #endregion Public Methods
 
-        uint ICompressible<ushort>.GetRequiredBytes()
+        // Clamps the value if necessary and sets the underlying value.
+        void SetAndClamp(ushort value)
         {
-            uint range = (uint)(MaxValue - MinValue);
-            return Maths.GetRequiredBytes(range, sizeof(ushort));
+            // Clamp value if out of bounds.
+            if (value < MinValue || value > MaxValue)
+            {
+                this.Value = value < MinValue ? MinValue : MaxValue;
+                throw new ArgumentOutOfRangeException("Value was out of compression range and has been clamped.");
+            }
+
+            this.Value = value;
         }
 
         // Get the underlying ushort by using CompressedUShort as a right-hand value.
