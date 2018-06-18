@@ -5,8 +5,10 @@
 // Purpose: Provide a compressed short surrogate.
 // ----------------------------------------------------
 
+using Skaia.Unity.GUI;
 using Skaia.Utils;
 using System;
+using UnityEngine;
 
 namespace Skaia.Serialization
 {
@@ -14,35 +16,52 @@ namespace Skaia.Serialization
     /// A compressible short for packet serialization.
     /// </summary>
     [Serializable]
-    public class CompressedShort : ICompressible<short>
+    public class CompressibleShort : INumericCompressible<short>
     {
-        public CompressedShort(short minValue, short maxValue)
+        public CompressibleShort(short minValue, short maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
         }
 
+        [SerializeField]
         private short _value;
+        [SerializeField]
+        private bool _compressionEnabled = true;
+        [SerializeField]
+        [ShowIf("_compressionEnabled", true)]
+        private short _minValue, _maxValue;
 
         /// <summary>
         /// The minimum value of this short.
         /// </summary>
-        public short MinValue { get; }
+        public short MinValue { get { return _minValue; } set { _minValue = value; } }
+
         /// <summary>
         /// The maximum value of this short.
         /// </summary>
-        public short MaxValue { get; }
+        public short MaxValue { get { return _maxValue; } set { _maxValue = value; } }
+
         /// <summary>
         /// The actual short.
         /// </summary>
         public short Value { get { return _value; } set { SetAndClamp(value); } }
 
-        #region Public Methods
+        /// <summary>
+        /// Whether we should compress this before serializing.
+        /// </summary>
+        public bool CompressionEnabled { get { return _compressionEnabled; } set { _compressionEnabled = value; } }
+
         /// <summary>
         /// Compress this short into a compact byte array.
         /// </summary>
         public byte[] Compress()
         {
+            if (!CompressionEnabled)
+            {
+                return BitConverter.GetBytes(Value);
+            }
+
             // Get the max range of this compressed short...
             uint range = (uint)(MaxValue - MinValue);
             // ... and the required bytes to hold it.
@@ -66,6 +85,12 @@ namespace Skaia.Serialization
         /// </summary>
         public void Decompress(byte[] data)
         {
+            if (!CompressionEnabled)
+            {
+                Value = BitConverter.ToInt16(data, 0);
+                return;
+            }
+
             // Make a byte array as big as the size of a short.
             byte[] decompressed = new byte[sizeof(short)];
             Array.Copy(data, decompressed, data.Length);
@@ -74,7 +99,6 @@ namespace Skaia.Serialization
             // Set the value by adding the MinValue to the decompressed short.
             Value = (short)(MinValue + decompressedShort);
         }
-        #endregion Public Methods
 
         // Clamps the value if necessary and sets the underlying value.
         void SetAndClamp(short value)
@@ -82,15 +106,15 @@ namespace Skaia.Serialization
             // Clamp value if out of bounds.
             if (value < MinValue || value > MaxValue)
             {
-                this.Value = value < MinValue ? MinValue : MaxValue;
+                _value = value < MinValue ? MinValue : MaxValue;
                 throw new ArgumentOutOfRangeException("Value was out of compression range and has been clamped.");
             }
 
-            this.Value = value;
+            _value = value;
         }
 
-        // Get the underlying short by using CompressedShort as a right-hand value.
-        public static implicit operator short(CompressedShort cShort)
+        // Get the underlying short by using CompressibleShort as a right-hand value.
+        public static implicit operator short(CompressibleShort cShort)
         {
             return cShort.Value;
         }

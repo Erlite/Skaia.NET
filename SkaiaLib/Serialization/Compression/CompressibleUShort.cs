@@ -5,43 +5,62 @@
 // Purpose: Provide a compressed ushort surrogate.
 // ----------------------------------------------------
 
+using Skaia.Unity.GUI;
 using Skaia.Utils;
 using System;
+using UnityEngine;
 
 namespace Skaia.Serialization
 {
     /// <summary>
     /// A compressible ushort for serialization.
     /// </summary>
-    public class CompressedUShort : ICompressible<ushort>
+    public class CompressibleUShort : INumericCompressible<ushort>
     {
-        public CompressedUShort(ushort minValue, ushort maxValue)
+        public CompressibleUShort(ushort minValue, ushort maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
         }
 
+        [SerializeField]
         private ushort _value;
+        [SerializeField]
+        private bool _compressionEnabled = true;
+        [SerializeField]
+        [ShowIf("_compressionEnabled", true)]
+        private ushort _minValue, _maxValue;
 
         /// <summary>
         /// The minimum value of this ushort.
         /// </summary>
-        public ushort MinValue { get; }
+        public ushort MinValue { get { return _minValue; } set { _minValue = value; } }
+
         /// <summary>
         /// The maximum value of this ushort.
         /// </summary>
-        public ushort MaxValue { get; }
+        public ushort MaxValue { get { return _maxValue; } set { _maxValue = value; } }
+
         /// <summary>
         /// The actual ushort.
         /// </summary>
-        public ushort Value {  get { return _value; } set { SetAndClamp(value); } }
+        public ushort Value { get { return _value; } set { SetAndClamp(value); } }
 
-        #region Public Methods
+        /// <summary>
+        /// Whether we should compress this before serializing.
+        /// </summary>
+        public bool CompressionEnabled { get { return _compressionEnabled; } set { _compressionEnabled = value; } }
+
         /// <summary>
         /// Compress this ushort into a compact byte array.
         /// </summary>
         public byte[] Compress()
         {
+            if (!CompressionEnabled)
+            {
+                return BitConverter.GetBytes(Value);
+            }
+
             // Get the max range of this compressed ushort...
             uint range = (uint)(MaxValue - MinValue);
             // ... and the required bytes to hold it.
@@ -65,6 +84,12 @@ namespace Skaia.Serialization
         /// </summary>
         public void Decompress(byte[] data)
         {
+            if (!CompressionEnabled)
+            {
+                Value = BitConverter.ToUInt16(data, 0);
+                return;
+            }
+
             // Make a byte array as big as the size of a ushort.
             byte[] decompressed = new byte[sizeof(ushort)];
             Array.Copy(data, decompressed, data.Length);
@@ -73,7 +98,6 @@ namespace Skaia.Serialization
             // Set the value by adding the MinValue to the decompressed ushort.
             Value = (ushort)(MinValue + decompressedushort);
         }
-        #endregion Public Methods
 
         // Clamps the value if necessary and sets the underlying value.
         void SetAndClamp(ushort value)
@@ -81,15 +105,15 @@ namespace Skaia.Serialization
             // Clamp value if out of bounds.
             if (value < MinValue || value > MaxValue)
             {
-                this.Value = value < MinValue ? MinValue : MaxValue;
+                _value = value < MinValue ? MinValue : MaxValue;
                 throw new ArgumentOutOfRangeException("Value was out of compression range and has been clamped.");
             }
 
-            this.Value = value;
+            _value = value;
         }
 
-        // Get the underlying ushort by using CompressedUShort as a right-hand value.
-        public static implicit operator ushort(CompressedUShort cUShort)
+        // Get the underlying ushort by using CompressibleUShort as a right-hand value.
+        public static implicit operator ushort(CompressibleUShort cUShort)
         {
             return cUShort.Value;
         }

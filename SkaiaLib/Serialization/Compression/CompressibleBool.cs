@@ -6,13 +6,14 @@
 // ------------------------------------------------------------------------------
 
 using System;
+using UnityEngine;
 
 namespace Skaia.Serialization
 {
     /// <summary>
     /// Wrapper class that can hold eight bools in a single byte.
     /// </summary>
-    public class CompressedBool
+    public class CompressibleBool : ICompressible<byte>
     {
         /// <summary>
         /// The underlying byte which holds the eight booleans.
@@ -46,6 +47,21 @@ namespace Skaia.Serialization
                 int i = value ? 1 : 0;
                 Byte |= (byte)(i << index);
             }
+        }
+
+        [Obsolete("CompressibleBool is always compressed.")]
+        public bool CompressionEnabled { get; set; }
+
+        byte ICompressible<byte>.Value { get { return Byte; } set { Byte = value; } }
+
+        public byte[] Compress()
+        {
+            return new byte[] { Byte };
+        }
+
+        public void Decompress(byte[] data)
+        {
+            Byte = data[0];
         }
     }
 }
