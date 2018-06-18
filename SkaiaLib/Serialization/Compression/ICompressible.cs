@@ -1,11 +1,4 @@
 ﻿
-// ----------------------------------------------------
-// Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
-// Purpose: Provide an abstract compression class.
-// ----------------------------------------------------
-
-
 // -----------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
 // Author: Younes Meziane
@@ -16,11 +9,9 @@ namespace Skaia.Serialization
 {
     public interface ICompressible<T>
     {
-        // The minimum possible value of T.
-        T MinValue { get; }
-        // The maximum possible value of T.
-        T MaxValue { get; }
-        // The uncompressed value itself.
+        // Should we use compression?
+        bool CompressionEnabled { get; set; }
+        // The actual value of this instance.
         T Value { get; set; }
         // Compress the current value.
         byte[] Compress();
