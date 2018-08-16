@@ -1,29 +1,41 @@
 ﻿
 // -----------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Base socket implementation.
 // -----------------------------------------
 
+using Skaia.Logging;
 using Skaia.Surrogates;
+using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Skaia.Sockets
 {
-    public abstract class BaseSocket
+    /// <summary>
+    /// The lowest level of sockets, can be used to create your own socket behaviour for the NetworkManager.
+    /// </summary>
+    public abstract class NetSocket
     {
-        public abstract Socket Socket { get; protected set; }
-        protected abstract byte[] RecvBuffer { get; }
-        protected abstract EndPoint LocalEndpoint { get; set; }
-        protected abstract SafeQueue<Packet> InQueue { get; }
-        protected abstract SafeQueue<Packet> OutQueue { get; }
+        private EndPoint _recvEndpoint;
 
-        public abstract bool Poll(int timeout);
-        public abstract int Receive(byte[] buffer, int length, out EndPoint sender);
+        public abstract Socket Socket { get; protected set; }
+
+        // TODO: Change this to an ArrayPool.
+        protected abstract byte[] RecvBuffer { get; }
+        protected abstract Action<byte[], SEndPoint> RawDataReceived { get; set; }
+        protected abstract EndPoint LocalEndpoint { get; set; }
+        protected abstract ConcurrentQueue<Packet> InQueue { get; }
+        protected abstract ConcurrentQueue<Packet> OutQueue { get; }
+
+        public abstract byte[] Receive(byte[] buffer, int length, out EndPoint sender);
         public abstract int Send(byte[] data, int length, EndPoint receiver);
         public abstract void BindSocket(EndPoint localEndpoint);
-        public abstract void Loop();
+        public abstract void SendLoop();
+        public abstract void ReceiveLoop();
 
         /// <summary>
         /// Add a received packet to the queue.

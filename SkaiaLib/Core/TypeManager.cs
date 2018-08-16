@@ -1,7 +1,7 @@
 ﻿
 // ----------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Register types for serialization
 // ----------------------------------------------------
 
@@ -12,8 +12,9 @@ using System.Linq;
 namespace Skaia.Core
 {
     /// <summary>
-    /// Manages types to be used with serialization by <see cref="Serialization.PacketBuilder"/>
+    /// Manages types to be used with serialization by <see cref="Serialization.PacketReader"/>
     /// </summary>
+    [Obsolete("Obsolete, this will be ported to PacketHandler")]
     public static class TypeManager
     {
         private static ushort _id = 0;

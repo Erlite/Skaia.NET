@@ -1,7 +1,7 @@
 ﻿
 // ------------------------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Provide a compact way to serialize multiple bools into a single byte.
 // ------------------------------------------------------------------------------
 

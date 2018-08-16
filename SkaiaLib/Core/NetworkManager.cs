@@ -1,18 +1,15 @@
 ﻿
 // --------------------------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Handle receiving/sending packets and keeping virtual connections alive.
 // --------------------------------------------------------------------------------
 
-using Skaia.Events;
 using Skaia.Sockets;
 using Skaia.Surrogates;
 using Skaia.Utils;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Skaia.Core
 {
@@ -21,10 +18,9 @@ namespace Skaia.Core
     /// </summary>
     public static class NetworkManager
     {
-        private static BaseSocket coreSocket;
+        private static NetSocket coreSocket;
         private static Client localMachine;
         private static NetworkMode netMode;
-        private static Thread socketThread;
 
         internal static NetworkSettings Settings;
 
@@ -37,7 +33,8 @@ namespace Skaia.Core
         /// <summary>
         /// The dispatcher that handles routing network events into their respective callbacks.
         /// </summary>
-        public static Dispatcher<NetEvent> Dispatcher { get; private set; } = new Dispatcher<NetEvent>();
+        // TODO: Remove this.
+        //public static Dispatcher<NetworkEvent> Dispatcher { get; private set; } = new Dispatcher<NetworkEvent>();
 
         /// <summary>
         /// Returns the current state of the NetworkManager.
@@ -95,7 +92,7 @@ namespace Skaia.Core
         /// <param name="socket"> The socket to use. </param>
         /// <param name="settings"> The settings used by the network manager. </param>
         /// <param name="mode"> The network mode to use. </param>
-        public static void StartNetwork(BaseSocket socket, NetworkSettings settings, NetworkMode mode)
+        public static void StartNetwork(NetSocket socket, NetworkSettings settings, NetworkMode mode)
         {
             if (IsStarted)
             {
@@ -103,19 +100,16 @@ namespace Skaia.Core
             }
 
             coreSocket = socket;
-            IPAddress address = NetUtils.GetLocalEndpoint();
+            var address = NetUtils.GetLocalEndpoint();
 
-            SEndPoint local = SEndPoint.Create(address.GetAddressBytes(), settings.Port);
+            var local = SEndPoint.Create(address.GetAddressBytes(), settings.Port);
             coreSocket.BindSocket(local);
             NetUtils.SetConnReset(coreSocket.Socket);
 
-            socketThread = new Thread(coreSocket.Loop)
-            {
-                Name = "Skaia.NET NetworkManager",
-                IsBackground = true
-            };
-
-            socketThread.Start();
+            // Run the receiving loop on a new Task.
+            Task.Run(() => coreSocket.ReceiveLoop());
+            // TODO: Implement differed sending loop through Tick.
+            
             netMode = mode;
             Settings = settings;
             IsStarted = true;

@@ -1,7 +1,7 @@
 ﻿
 // -------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Show a property if the condition is met.
 // -------------------------------------------------
 

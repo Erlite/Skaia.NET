@@ -1,32 +1,38 @@
 ﻿
 // ----------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Socket implementation to use UDP over IPv4.
 // ----------------------------------------------------
 
 using Skaia.Logging;
+using Skaia.Surrogates;
 using Skaia.Utils;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Skaia.Surrogates;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using Skaia.Core;
+using Skaia.Events;
 
 namespace Skaia.Sockets
 {
-    public sealed class UDPSocket : BaseSocket
+    public sealed class UDPSocket : NetSocket
     {
         private EndPoint recvEndpoint;
-        private SafeQueue<Packet> inQueue = new SafeQueue<Packet>();
-        private SafeQueue<Packet> outQueue = new SafeQueue<Packet>();
-        private Socket socket;
+        private ConcurrentQueue<Packet> _inQueue = new ConcurrentQueue<Packet>();
+        private ConcurrentQueue<Packet> _outQueue = new ConcurrentQueue<Packet>();
+        private Socket _socket;
 
-        public override Socket Socket { get { return socket; } protected set { socket = value; } }
+        public override Socket Socket { get { return _socket; } protected set { _socket = value; } }
 
-        protected sealed override EndPoint LocalEndpoint { get; set; }
+        protected override Action<byte[], SEndPoint> RawDataReceived { get; set; }
+        protected override EndPoint LocalEndpoint { get; set; }
         protected override byte[] RecvBuffer { get; } = new byte[4096];
-        protected override SafeQueue<Packet> InQueue { get { return inQueue; } }
-        protected override SafeQueue<Packet> OutQueue { get { return outQueue; } }
+        protected override ConcurrentQueue<Packet> InQueue { get { return _inQueue; } }
+        protected override ConcurrentQueue<Packet> OutQueue { get { return _outQueue; } }
 
         /// <summary>
         /// Bind the socket to the local endpoint.
@@ -37,7 +43,7 @@ namespace Skaia.Sockets
             // Create a new IPv4 UDP Socket.
             Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)
             {
-                Blocking = false
+                Blocking = true
             };
 
             // Bind the local endpoint to the socket.
@@ -47,26 +53,8 @@ namespace Skaia.Sockets
             SkaiaLogger.LogMessage(MessageType.Info, $"Bound socket to {localEndpoint.ToString()}");
             // Set the connection reset.
 
-
+            RawDataReceived = new Action<byte[], SEndPoint>(DispatchRawPacket);
             NetUtils.SetConnReset(Socket);
-        }
-
-        /// <summary>
-        /// Poll the socket to see if anything is waiting to be received.
-        /// </summary>
-        /// <param name="timeout"> The amount of time to wait for a response. 1 for instant check. </param>
-        /// <returns> True if something is waiting to be received. </returns>
-        public override bool Poll(int timeout)
-        {
-            try
-            {
-                return Socket.Poll(timeout, SelectMode.SelectRead);
-            }
-            catch (Exception ex)
-            {
-                SkaiaLogger.LogMessage(MessageType.Error, "Failed to poll on socket", ex);
-                return false;
-            }
         }
 
         /// <summary>
@@ -82,58 +70,86 @@ namespace Skaia.Sockets
         }
 
         /// <summary>
-        /// Receive awaiting data from the socket.
+        /// Receive data on the socket. This will block the calling method until it finds something to receive.
         /// </summary>
         /// <param name="buffer"> The buffer to copy the data onto. </param>
         /// <param name="length"> The amount of data to copy. </param>
         /// <param name="sender"> The data's sender. </param>
-        /// <returns> The amount of data copied. -1 if nothing. </returns>
-        public override int Receive(byte[] buffer, int length, out EndPoint sender)
+        /// <returns> The data received or null if nothing. </returns>
+        public override byte[] Receive(byte[] buffer, int length, out EndPoint sender)
         {
-            int recvBytes = Socket.ReceiveFrom(buffer, 0, length, SocketFlags.None, ref recvEndpoint);
-
-            if (recvBytes > 0)
-            {
-                sender = recvEndpoint;
-                return recvBytes;
-            }
+            if (!Socket.IsBound)
+                throw new InvalidOperationException();
 
             sender = null;
-            return -1;
+
+            try
+            {
+                // Wait indefinitely to receive something on the socket.
+                if (Socket.Poll(-1, SelectMode.SelectRead))
+                {
+                    // Get the length of the packet received.
+                    int pcktLength = Socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref recvEndpoint);
+
+                    // If for some odd reason it's empty, we'll just discard it and return an empty byte array.
+                    if (pcktLength > 0)
+                    {
+                        byte[] data = new byte[pcktLength];
+                        Buffer.BlockCopy(buffer, 0, data, 0, data.Length);
+                        sender = recvEndpoint;
+                        return data;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // This probably happens if the socket isn't bound.
+                SkaiaLogger.LogMessage(MessageType.Error, "Failed to poll and receive on socket.", ex);
+                sender = null;
+            }
+
+            return null;
         }
 
 
         /// <summary>
-        /// To be called once, and in a new thread to avoid blocking.
-        /// Handles receiving/sending packets.
+        /// Handles receiving packets. Should be called in a new Task to avoid blocking the main thread.
         /// </summary>
-        public override void Loop()
+        public override void ReceiveLoop()
         {
             while (true)
             {
-                // If something has been received on the socket.
-                if (Poll(1))
-                {
-                    // Read the data
-                    EndPoint sender;
-                    int recvBytes = Receive(RecvBuffer, RecvBuffer.Length, out sender);
+                // Wait to receive something on the socket.
+                EndPoint sender = null;
+                byte[] data = Receive(RecvBuffer, RecvBuffer.Length, out sender);
 
-                    // If there's more than 0 bytes copy the data into the buffer and enqueue.
-                    if (recvBytes > 0)
-                    {
-                        byte[] data = new byte[recvBytes];
-                        Buffer.BlockCopy(RecvBuffer, 0, data, 0, recvBytes);
-                        Packet packet = new Packet { Data = data, Endpoint = sender };
-                        EnqueueReceivedPacket(packet);
-                    }
-                }
+                // Invoke the data received event.
+                IPEndPoint endPoint = sender as IPEndPoint;
+                RawDataReceived?.Invoke(data, SEndPoint.Create(endPoint.Address, endPoint.Port));
+            }
+        }
 
-                // Send queued data
-                Packet sendPckt;
-                while (DequeueTransmitPacketQueue(out sendPckt))
-                {
-                    Send(sendPckt.Data, sendPckt.Data.Length, sendPckt.Endpoint);
-                }
+
+        public override void SendLoop()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DispatchRawPacket(byte[] packet, SEndPoint sender)
+        {
+            // TODO: Implement support for multiple netevents in a single packet.
+            // Convert the two byte identifier to a ushort.
+            ushort id = BitConverter.ToUInt16(packet.SubArray(0, 2), 0);
+
+            // Try to find the type in the registered types dictionary.
+            Type packetType;
+            if (TypeManager.TryGetTypeFromID(id, out packetType))
+            {
+                NetworkEvent netEvent = new NetworkEvent(packet);
             }
         }
     }

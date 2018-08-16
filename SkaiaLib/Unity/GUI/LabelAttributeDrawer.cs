@@ -1,7 +1,7 @@
 ﻿
 // ---------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Allows developers to add a label on a serialized item.
 // ---------------------------------------------------------------
 

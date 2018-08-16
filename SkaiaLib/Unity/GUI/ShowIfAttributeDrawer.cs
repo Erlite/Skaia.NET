@@ -1,7 +1,7 @@
 ﻿
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Allows developers to mark fields/properties with ShowIfAttribute to only show the variable in the Inspector if a condition is met.
 // -------------------------------------------------------------------------------------------------------------------------------------------
 

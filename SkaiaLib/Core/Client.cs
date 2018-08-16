@@ -1,7 +1,7 @@
 ﻿
 // ---------------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Regroup information about a node on the network.
 // ---------------------------------------------------------
 

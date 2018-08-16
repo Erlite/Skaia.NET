@@ -1,7 +1,7 @@
 ﻿
 // ---------------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Dispatch objects using callbacks.
 // ---------------------------------------------------
 
@@ -14,7 +14,8 @@ namespace Skaia.Core
     /// Dispatch a specific type to a callback.
     /// </summary>
     /// <typeparam name="T"> The type of object to dispatch. </typeparam>
-    public class Dispatcher<T> 
+    [Obsolete("Refactoring this into the INetworkEvent itself.")]
+    public sealed class Dispatcher<T> 
     {
         Dictionary<Type, Action<T>> callbacks = new Dictionary<Type, Action<T>>();
 

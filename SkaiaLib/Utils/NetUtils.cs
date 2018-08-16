@@ -1,7 +1,7 @@
 ﻿
 // ------------------------------------------
 // Copyright (c) 2018 All Rights Reserved
-// Author: Younes Meziane
+// Author: Erlite @ VM
 // Purpose: Regroup networking utilities.
 // ------------------------------------------
 
@@ -54,6 +54,7 @@ namespace Skaia.Utils
                                 .FirstOrDefault();
 
             // Shouldn't ever arrive but you're never sure enough.
+            // TODO: Again maybe check if we should just fail at this point.
             if (address == null)
                 return IPAddress.Parse("127.0.0.1");
 
