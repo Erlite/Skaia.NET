@@ -15,7 +15,7 @@ namespace Skaia.Serialization
         T Value { get; set; }
         // Compress the current value.
         byte[] Compress();
-        // Decompress a byte array and set this value.
-        void Decompress(byte[] data);
+        // Decompress a byte array into T
+        T Decompress(byte[] data);
     }
 }
