@@ -65,7 +65,6 @@ namespace Skaia.Serialization
         /// <returns> The corresponding type. </returns>
         public Type ReadType()
         {
-            
             byte[] identifier = _reader.ReadBytes(2);
             ushort id = BitConverter.ToUInt16(identifier, 0);
             Type type;

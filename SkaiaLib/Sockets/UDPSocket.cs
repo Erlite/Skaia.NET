@@ -9,16 +9,14 @@ using Skaia.Logging;
 using Skaia.Surrogates;
 using Skaia.Utils;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 using Skaia.Core;
-using Skaia.Events;
 
 namespace Skaia.Sockets
 {
+    // TODO: Use Async event based receiving.
     public sealed class UDPSocket : NetSocket
     {
         private EndPoint recvEndpoint;
